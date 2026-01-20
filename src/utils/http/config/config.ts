@@ -11,7 +11,7 @@ export const HTTP_TIMEOUT = 300000;
 /**
  * 不需要认证的api
  */
-export const AUTH_WHITE_URLS = ["/api/user/login"];
+export const AUTH_WHITE_URLS = [];
 
 /**
  * HTTP code
@@ -25,12 +25,14 @@ export enum HTTP_CODE {
  * 获取请求的base url
  */
 export function getBaseUrl() {
-  return "https://gatewayuat.apist.gerpgo.com";
+  // return "https://gatewayuat.apist.gerpgo.com";
+  return "https://gateway.apist.gerpgo.com";
 }
 
 /**
  * 获取请求的base url
  */
 export function getGOrigin() {
-  return "https://yufabu3.localtest.gerpgo.com";
+  // return "https://yufabu3.localtest.gerpgo.com";
+  return "";
 }

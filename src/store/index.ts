@@ -1,6 +1,5 @@
-import type { App } from 'vue';
-import { createPinia } from 'pinia';
-import { useUserStoreOutside } from './modules/user';
+import type { App } from "vue";
+import { createPinia } from "pinia";
 
 export const store = createPinia();
 
@@ -11,8 +10,6 @@ export const store = createPinia();
  */
 export async function setupStore(app: App) {
   app.use(store);
-  // 初始化用户
-  await useUserStoreOutside().init();
 }
 
-export { useUserStoreOutside } from './modules/user';
+export { useUserStoreOutside } from "./modules/user";

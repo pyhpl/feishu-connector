@@ -1,27 +1,16 @@
-import { store } from '@/store';
-import { UserStore } from './model';
-import { defineStore } from 'pinia';
-import { User } from '@/model/user';
+import { store } from "@/store";
+import { UserStore } from "./model";
+import { defineStore } from "pinia";
+import { User } from "@/model/user";
 
-const USER_KEY = 'user';
+const USER_KEY = "user";
 
 export const useUserStore = defineStore({
-  id: 'user',
+  id: "user",
   state: (): UserStore => ({
     user: null,
   }),
   actions: {
-    init() {
-      if (this.user) {
-        return;
-      }
-
-      const userStr = localStorage.getItem(USER_KEY);
-
-      if (userStr) {
-        this.setUser(JSON.parse(userStr));
-      }
-    },
     reset() {
       this.setUser(null);
     },
@@ -31,12 +20,10 @@ export const useUserStore = defineStore({
     setUser(user: User | null) {
       if (!user) {
         user = null;
-        localStorage.removeItem(USER_KEY);
         return;
       }
 
       this.user = user;
-      localStorage.setItem(USER_KEY, JSON.stringify(user));
     },
   },
 });

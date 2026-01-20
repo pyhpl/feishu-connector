@@ -1,12 +1,6 @@
 import { AxiosInstance } from "axios";
 import qs from "qs";
-import {
-  AUTH_TOKEN,
-  AUTH_WHITE_URLS,
-  getGOrigin,
-  HTTP_CODE,
-} from "../config/config";
-import { getToken } from "../config/token";
+import { AUTH_WHITE_URLS, getGOrigin, HTTP_CODE } from "../config/config";
 import { GjMessage } from "@gj/atom";
 import { CustomRequestConfig } from "../config/model";
 import { useUserStoreOutside } from "@/store/modules/user";
@@ -26,9 +20,7 @@ function requestInterceptor(http: AxiosInstance) {
   http.interceptors.request.use(
     (config: CustomRequestConfig) => {
       if (!AUTH_WHITE_URLS.some((url) => config.url?.includes(url))) {
-        // 非白名单需设置token
         config.headers = config.headers || {};
-        // config.headers[AUTH_TOKEN] = `Bearer ${getToken()}`;
         config.headers["g-origin"] = getGOrigin();
       }
 
@@ -43,7 +35,7 @@ function requestInterceptor(http: AxiosInstance) {
     (error) => {
       console.error(error);
       return Promise.reject(error);
-    }
+    },
   );
 }
 
@@ -103,7 +95,7 @@ function responseInterceptor(http: AxiosInstance) {
 
         return Promise.reject(response?.data);
       }
-    }
+    },
   );
 }
 
