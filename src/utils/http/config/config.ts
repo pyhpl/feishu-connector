@@ -25,14 +25,16 @@ export enum HTTP_CODE {
  * 获取请求的base url
  */
 export function getBaseUrl() {
-  // return "https://gatewayuat.apist.gerpgo.com";
-  return "https://gateway.apist.gerpgo.com";
+  return process.env.NODE_ENV === "development" || true
+    ? "https://gatewayuat.apist.gerpgo.com"
+    : "https://gateway.apist.gerpgo.com";
 }
 
 /**
  * 获取请求的base url
  */
 export function getGOrigin() {
-  // return "https://yufabu3.localtest.gerpgo.com";
-  return "";
+  return process.env.NODE_ENV === "development" || true
+    ? "https://yufabu3.localtest.gerpgo.com"
+    : "";
 }

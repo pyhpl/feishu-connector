@@ -3,6 +3,5 @@ export interface Configuration {
   baseUserName?: string;
   moduleCode?: string;
   maxPageSize?: number;
-  startDate?: string;
-  endDate?: string;
+  filters?: Record<string, any>;
 }

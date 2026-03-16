@@ -3,6 +3,7 @@ lockfileVersion: 5.4
 specifiers:
   '@gj/atom': 1.7.0
   '@gj/biz': 1.7.0
+  '@gj/webpack-plugin': 1.0.23
   '@lark-base-open/connector-api': ^0.1.1
   '@types/lodash-es': ^4.17.12
   '@types/node': ^25.0.0
@@ -52,6 +53,7 @@ dependencies:
   vue-router: 4.6.3_vue@3.5.25
 
 devDependencies:
+  '@gj/webpack-plugin': 1.0.23
   '@types/lodash-es': 4.17.12
   '@types/node': 25.0.0
   '@types/qs': 6.14.0
@@ -1363,6 +1365,13 @@ packages:
     dependencies:
       vue: 3.5.25_typescript@4.5.5
     dev: false
+
+  /@gj/webpack-plugin/1.0.23:
+    resolution: {integrity: sha512-J3Y3brgrUZqt4t0WvQGP95du4aSjnD/5zUyRbb4u+Lofq6cp/Lu7QFWHmDkbXUYbiD2q9mDZUZYV5eVcc9HS+A==}
+    dependencies:
+      dayjs: 1.11.19
+      lodash: 4.17.21
+    dev: true
 
   /@hapi/address/2.1.4:
     resolution: {integrity: sha1-XWftQ/P9QaadS5/3tW58DR0KgeU=}
@@ -4792,7 +4801,6 @@ packages:
 
   /dayjs/1.11.19:
     resolution: {integrity: sha512-t5EcLVS6QPBNqM2z8fakk/NKel+Xzshgt8FFKAn+qwlD1pzZWxh0nVCrvFK7ZDb6XucZeF9z8C7CBWTRIVApAw==}
-    dev: false
 
   /debug/2.6.9:
     resolution: {integrity: sha1-XRKFFd8TT/Mn6QpMk/Tgd6U2NB8=}

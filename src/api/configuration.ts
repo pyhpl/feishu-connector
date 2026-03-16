@@ -59,6 +59,13 @@ export function getDataModule() {
   return http.get<CustomResponse<any[]>>("/connector/getDataModule");
 }
 
+export function getUserInfo(params: any) {
+  return http.post<CustomResponse<{ baseUserName: string }>>(
+    "/connector/getUserInfo",
+    params,
+  );
+}
+
 export function getTableMeta(params: any) {
   return http.post<CustomResponse<any>>("/connector/getTableMeta", params);
 }

@@ -4,7 +4,9 @@
     :data-scroll-view-title="title"
     :class="prefixCls"
   >
-    <div :class="`${prefixCls}-title`">{{ title }}</div>
+    <div :class="`${prefixCls}-title`">
+      <slot name="title">{{ title }}</slot>
+    </div>
     <slot />
   </div>
 </template>

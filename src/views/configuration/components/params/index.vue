@@ -1,30 +1,30 @@
 <template>
+  <!-- <div>{{ configStore.filters }}</div> -->
   <gj-form
     ref="formRef"
     layout="vertical"
     :class="prefixCls"
-    :model="configStore"
+    :model="configStore.filters"
   >
-    <gj-form-item
-      field="startDate"
-      :label="label"
-      :show-colon="false"
-      :rules="[{ required: true, message: '请选择时间范围' }]"
+    <template
+      v-for="(filter, index) in filterList"
+      :key="`${configStore.dataSourceCode}_${index}`"
     >
-      <gj-range-picker
-        :model-value="dateRange"
-        @change="valueChange"
-        style="padding-top: 7px; width: 250px"
+      <RangePicker
+        v-if="filter.filterType === 'range-picker'"
+        :filter="filter"
       />
-    </gj-form-item>
+      <Select v-if="filter.filterType === 'select'" :filter="filter" />
+    </template>
   </gj-form>
 </template>
 
 <script setup lang="ts">
 import { computed, inject, onMounted, onUnmounted, ref } from "vue";
 import { useConfigStore } from "../../store";
-import { isEmpty } from "lodash-es";
 import { ValidatorContainerKey } from "../../context";
+import RangePicker from "./range-picker.vue";
+import Select from "./select.vue";
 
 const props = defineProps<{
   title: string;
@@ -34,32 +34,9 @@ const prefixCls = "e3416f12";
 const formRef = ref();
 const configStore = useConfigStore();
 
-const label = computed(() => {
-  return {
-    PRODUCT: "创建时间",
-    DISTRIBUTION: "创建时间",
-    ORDER: "订购时间",
-    PURCHASE_ORDER: "创建时间",
-    FBA_GOODS: "创建时间",
-  }[configStore.dataSourceCode];
+const filterList = computed(() => {
+  return configStore.filterList.filter((item) => item.filterType !== "hidden");
 });
-
-const dateRange = computed(() => {
-  if (configStore.startDate && configStore.endDate) {
-    return [configStore.startDate, configStore.endDate];
-  }
-  return [];
-});
-
-const valueChange = (value: string[]) => {
-  if (!isEmpty(value)) {
-    configStore.startDate = value[0];
-    configStore.endDate = value[1];
-  } else {
-    configStore.startDate = "";
-    configStore.endDate = "";
-  }
-};
 
 /**
  * 验证

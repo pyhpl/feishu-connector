@@ -1,7 +1,7 @@
 <template>
   <div :class="prefixCls">
     <div
-      v-for="item in configStore.dataSourceList"
+      v-for="item in configStore.filterDataSourceList"
       :key="item.code"
       :class="[
         `${prefixCls}-item`,
@@ -45,8 +45,7 @@ const configStore = useConfigStore();
 
 const onClick = (code: string) => {
   configStore.setDataSourceCode(code);
-  configStore.startDate = "";
-  configStore.endDate = "";
+  configStore.filters = {};
 };
 </script>
 

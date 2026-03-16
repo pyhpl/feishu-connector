@@ -10,15 +10,14 @@
           :class="`${prefixCls}-item`"
         >
           <component :is="view.component" :index="index" :title="view.title" />
+          <template v-if="view.title === '数据源选择'" #title>
+            <DataSourceHead />
+          </template>
         </scroll-view-item>
       </scroll-view>
     </div>
     <div :class="`${prefixCls}-footer`">
-      <gj-button
-        type="primary"
-        :disabled="disabled"
-        :loading="saveing"
-        @click="next"
+      <gj-button type="primary" :loading="saveing" @click="next"
         >下一步</gj-button
       >
     </div>
@@ -33,6 +32,9 @@ import Params from "./components/params/index.vue";
 import { useConfigStore } from "./store";
 import { computed, provide, ref } from "vue";
 import { ValidatorContainer, ValidatorContainerKey } from "./context";
+import DataSourceHead from "./components/data-source-head.vue";
+import { isEmpty } from "lodash-es";
+import { GjMessage } from "@gj/atom";
 
 const prefixCls = "f28b3eba";
 const configStore = useConfigStore();
@@ -41,33 +43,17 @@ const saveing = ref(false);
 
 const contentRef = ref<HTMLElement>();
 
-const needParamsDataSourceCodes = [
-  "PRODUCT",
-  "DISTRIBUTION",
-  "ORDER",
-  "PURCHASE_ORDER",
-  "FBA_GOODS",
-];
-
 const scrollViews = computed(() => {
   const configs: any[] = [
     { title: "账号设置", component: Account },
     { title: "数据源选择", component: DataSource },
   ];
 
-  if (needParamsDataSourceCodes.includes(configStore.dataSourceCode)) {
+  if (!isEmpty(configStore.filterList)) {
     configs.push({ title: "参数设置", component: Params });
   }
 
   return configs;
-});
-
-const disabled = computed(() => {
-  return (
-    !configStore.username ||
-    (needParamsDataSourceCodes.includes(configStore.dataSourceCode) &&
-      (!configStore.startDate || !configStore.endDate))
-  );
 });
 
 /**
@@ -92,6 +78,11 @@ const validatorContainer: ValidatorContainer = {
 provide(ValidatorContainerKey, validatorContainer);
 
 const next = async () => {
+  if (!configStore.username) {
+    GjMessage.error("请设置账号");
+    return;
+  }
+
   saveing.value = true;
 
   try {
@@ -101,7 +92,7 @@ const next = async () => {
           validator,
           error: await validator.validate(),
         };
-      })
+      }),
     );
 
     const error = errors.find((item) => item.error);
@@ -117,13 +108,22 @@ const next = async () => {
       return;
     }
 
+    const hiddenFilterValue = (configStore.filterList || [])
+      .filter((item) => item.filterType === "hidden")
+      .reduce((pre, cur) => {
+        pre[cur.filterField] = cur.defaultFilterValue;
+        return pre;
+      }, {});
+
     await setConfiguration({
       baseUserId: configStore.userId,
       baseUserName: configStore.username,
       moduleCode: configStore.dataSourceCode,
       maxPageSize: configStore.maxPageSize,
-      startDate: configStore.startDate,
-      endDate: configStore.endDate,
+      filters: {
+        ...configStore.filters,
+        ...(hiddenFilterValue || {}),
+      },
     });
   } finally {
     saveing.value = false;

@@ -26,7 +26,7 @@
     <template #footer>
       <gj-space>
         <gj-button type="plain" @click="destroy">取消</gj-button>
-        <gj-button type="primary" @click="ok">确认</gj-button>
+        <gj-button type="primary" :loading="oking" @click="ok">确认</gj-button>
       </gj-space>
     </template>
   </gb-modal>
@@ -34,6 +34,7 @@
 
 <script lang="ts" setup>
 import { ref } from "vue";
+import { GjMessage } from "@gj/atom";
 import { useModal } from "@gj/biz";
 import { changeUsername } from "@/api/configuration";
 import { useConfigStore } from "../../store";
@@ -41,8 +42,9 @@ import { useConfigStore } from "../../store";
 const { destroy } = useModal();
 
 const prefixCls = "b89a1ebd";
-
 const configStore = useConfigStore();
+
+const oking = ref(false);
 
 const formRef = ref();
 const form = ref({
@@ -50,12 +52,26 @@ const form = ref({
 });
 
 const ok = () => {
-  formRef.value.validate((error) => {
+  formRef.value.validate(async (error) => {
     if (!error) {
-      changeUsername({
-        baseUserId: configStore.userId,
-        baseUserName: form.value.username,
-      });
+      oking.value = true;
+
+      try {
+        const res = await changeUsername({
+          baseUserId: configStore.userId,
+          baseUserName: form.value.username,
+        });
+
+        if (res.code === 0) {
+          configStore.username = form.value.username;
+          GjMessage.success("修改成功");
+          destroy();
+        } else {
+          GjMessage.error(res.message?.zh || "修改失败");
+        }
+      } finally {
+        oking.value = false;
+      }
     }
   });
 };
