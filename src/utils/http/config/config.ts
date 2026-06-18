@@ -25,7 +25,8 @@ export enum HTTP_CODE {
  * 获取请求的base url
  */
 export function getBaseUrl() {
-  return process.env.NODE_ENV === "development" || true
+  return process.env.NODE_ENV === "development" ||
+    location.host.includes(".localtest.gerpgo.com")
     ? "https://gatewayuat.apist.gerpgo.com"
     : "https://gateway.apist.gerpgo.com";
 }
@@ -34,7 +35,8 @@ export function getBaseUrl() {
  * 获取请求的base url
  */
 export function getGOrigin() {
-  return process.env.NODE_ENV === "development" || true
+  return process.env.NODE_ENV === "development" ||
+    location.host.includes(".localtest.gerpgo.com")
     ? "https://yufabu3.localtest.gerpgo.com"
     : "";
 }

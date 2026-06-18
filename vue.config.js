@@ -2,6 +2,15 @@ const { codeInspectorPlugin } = require("code-inspector-plugin");
 const { BuildManifestPlugin } = require("@gj/webpack-plugin");
 // 是否生产环境
 const isProd = process.env.NODE_ENV === "production";
+// 环境变量
+const env = {
+  ERP_BASIC: {
+    API_PREFIX: "/connector",
+  },
+  ERP_ADS: {
+    API_PREFIX: "/adsconnector",
+  },
+}[process.env.VUE_APP_NAME];
 
 module.exports = {
   pages: {
@@ -47,6 +56,15 @@ module.exports = {
 
         return args;
       });
+    });
+
+    // 环境变量配置
+    config.plugin("define").tap((args) => {
+      Object.keys(env).forEach((key) => {
+        args[0]["process.env"][key] = `"${env[key]}"`;
+      });
+
+      return args;
     });
 
     if (!isProd) {

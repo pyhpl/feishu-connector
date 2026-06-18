@@ -15,7 +15,7 @@ export async function getUserId(): Promise<string> {
   } else {
     const userId = await bitable.getUserId();
 
-    // alert(`userId: ${userId}`);
+    console.log(`userId: ${userId}`);
 
     return userId;
   }
@@ -36,7 +36,7 @@ export async function getConfiguration(): Promise<Configuration> {
   } else {
     const config = await bitable.getConfig();
 
-    // alert(`config: ${JSON.stringify(config)}`);
+    console.log(`config: ${JSON.stringify(config)}`);
 
     return (config || {}) as any;
   }
@@ -55,25 +55,37 @@ export async function setConfiguration(params: Configuration) {
   }
 }
 
-export function getDataModule() {
-  return http.get<CustomResponse<any[]>>("/connector/getDataModule");
+export function getDataModule(baseUserId = "") {
+  return http.get<CustomResponse<any[]>>(
+    `${process.env.API_PREFIX}/getDataModule`,
+    { baseUserId },
+  );
 }
 
 export function getUserInfo(params: any) {
   return http.post<CustomResponse<{ baseUserName: string }>>(
-    "/connector/getUserInfo",
+    `${process.env.API_PREFIX}/getUserInfo`,
     params,
   );
 }
 
 export function getTableMeta(params: any) {
-  return http.post<CustomResponse<any>>("/connector/getTableMeta", params);
+  return http.post<CustomResponse<any>>(
+    `${process.env.API_PREFIX}/getTableMeta`,
+    params,
+  );
 }
 
 export function changeUsername(params: any) {
-  return http.post<CustomResponse<any>>("/connector/changeUserName", params);
+  return http.post<CustomResponse<any>>(
+    `${process.env.API_PREFIX}/changeUserName`,
+    params,
+  );
 }
 
 export function bindFeishu(params: any) {
-  return http.post<CustomResponse<any>>("/connector/bindFeishu", params);
+  return http.post<CustomResponse<any>>(
+    `${process.env.API_PREFIX}/bindFeishu`,
+    params,
+  );
 }

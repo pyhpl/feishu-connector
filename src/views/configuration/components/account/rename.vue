@@ -67,7 +67,8 @@ const ok = () => {
           GjMessage.success("修改成功");
           destroy();
         } else {
-          GjMessage.error(res.message?.zh || "修改失败");
+          const msg = res.msg || JSON.stringify({ zh: "修改失败" });
+          GjMessage.error(JSON.parse(msg).zh);
         }
       } finally {
         oking.value = false;

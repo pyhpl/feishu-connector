@@ -48,54 +48,45 @@ export const useConfigStore = defineStore({
     },
   },
   actions: {
+    async initDataModule() {
+      const res = await getDataModule(this.username ? this.userId : "");
+      this.dataSourceList = res.data;
+    },
     async init() {
-      // 数据模块
-      const $1 = async () => {
-        const res = await getDataModule();
-
-        this.dataSourceList = res.data;
-      };
-
       // 配置
-      const $2 = async () => {
-        const res = await getConfiguration();
+      const getConfig = async () => {
+        const [userId, configRes] = await Promise.all([
+          getUserId(),
+          getConfiguration(),
+        ]);
 
-        this.userId = res.baseUserId;
-        this.username = res.baseUserName;
+        this.userId = configRes.baseUserId || userId;
+        this.username = configRes.baseUserName;
         this.maxPageSize = 100;
-        this.dataSourceCode = res.moduleCode;
-        this.filters = res.filters || {};
+        this.dataSourceCode = configRes.moduleCode;
+        this.filters = configRes.filters || {};
 
         if (!this.username) {
-          const userId = await getUserId();
-
           const res = await getUserInfo({
-            baseUserId: userId,
+            baseUserId: this.userId,
           });
 
           this.username = res.data.baseUserName;
         }
       };
 
-      // userId
-      const $3 = async () => {
-        this.userId = await getUserId();
-      };
-
       this.loading = true;
 
-      Promise.all([$1(), $2(), $3()])
-        .then(() => {
-          if (!this.dataSourceCode) {
-            this.dataSourceCode = this.dataSourceList[0].code;
-          }
-        })
-        .catch((e) => {
-          console.error(e);
-        })
-        .finally(() => {
-          this.loading = false;
-        });
+      try {
+        await getConfig();
+        await this.initDataModule();
+
+        if (!this.dataSourceCode && !isEmpty(this.dataSourceList)) {
+          this.dataSourceCode = this.dataSourceList[0].code;
+        }
+      } finally {
+        this.loading = false;
+      }
     },
     setDataSourceCode(code: string) {
       this.dataSourceCode = code;

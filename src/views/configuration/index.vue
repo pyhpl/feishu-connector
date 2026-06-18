@@ -33,7 +33,7 @@ import { useConfigStore } from "./store";
 import { computed, provide, ref } from "vue";
 import { ValidatorContainer, ValidatorContainerKey } from "./context";
 import DataSourceHead from "./components/data-source-head.vue";
-import { isEmpty } from "lodash-es";
+import { isEmpty, isNil } from "lodash-es";
 import { GjMessage } from "@gj/atom";
 
 const prefixCls = "f28b3eba";
@@ -43,13 +43,19 @@ const saveing = ref(false);
 
 const contentRef = ref<HTMLElement>();
 
+// 是否广告飞书连接器
+const isAds = process.env.VUE_APP_NAME === "ERP_ADS";
+
 const scrollViews = computed(() => {
   const configs: any[] = [
     { title: "账号设置", component: Account },
     { title: "数据源选择", component: DataSource },
   ];
 
-  if (!isEmpty(configStore.filterList)) {
+  if (
+    !isEmpty(configStore.filterList) &&
+    (!isAds || !isNil(configStore.username))
+  ) {
     configs.push({ title: "参数设置", component: Params });
   }
 

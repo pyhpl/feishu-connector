@@ -91,8 +91,14 @@ const ok = () => {
             configStore.username = form.value.username;
             GjMessage.success("关联成功");
             destroy();
+
+            if (process.env.VUE_APP_NAME === "ERP_ADS") {
+              // 广告飞书连接器需要先绑定账号，后获取参数设置（参数设置的选项需要根据账号来获取）
+              configStore.initDataModule();
+            }
           } else {
-            GjMessage.error(res.message?.zh || "关联失败");
+            const msg = res.msg || JSON.stringify({ zh: "关联失败" });
+            GjMessage.error(JSON.parse(msg).zh);
           }
         })
         .finally(() => {
